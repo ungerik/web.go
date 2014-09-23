@@ -62,7 +62,7 @@ func (ctx *Context) NotFound(message string) {
 	ctx.ResponseWriter.Write([]byte(message))
 }
 
-//Sets the content type by extension, as defined in the mime package. 
+//Sets the content type by extension, as defined in the mime package.
 //For example, ctx.ContentType("json") sets the content-type to "application/json"
 func (ctx *Context) ContentType(ext string) {
 	if !strings.HasPrefix(ext, ".") {
@@ -133,6 +133,11 @@ func (ctx *Context) GetSecureCookie(name string) (string, bool) {
 		}
 
 		parts := strings.SplitN(cookie.Value, "|", 3)
+
+		if len(parts) != 3 {
+			ctx.Server.Logger.Printf("Invalid format of cookie '%s'", name)
+			return "", false
+		}
 
 		val := parts[0]
 		timestamp := parts[1]
